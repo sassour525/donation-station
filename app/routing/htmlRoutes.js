@@ -9,7 +9,7 @@ module.exports = function(app) {
 	});
 
 	//serve the survey html page
-	app.get("/survey", function(req, res) {
-		res.sendFile(path.join(__dirname, "../public/survey.html"));
+	app.get("/form", function(req, res) {
+		res.sendFile(path.join(__dirname, "../public/form.html"));
 	});
 }

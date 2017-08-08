@@ -3,7 +3,7 @@ body {
 }
 
 #submit {
-	width: 250px;
+	width: 100px;
 }
 
 .wrapper {
@@ -17,4 +17,27 @@ body {
 
 h2 {
 	color: #337ab7;
+}
+
+.form-control {
+	display: inline;
+	width: auto;
+}
+
+.dropdown {
+	display: inline;
+}
+
+#quantity-input {
+	width: 90px;
+}
+
+.list-items {
+	margin-bottom: 10px;
+}
+
+#add-item-btn {
+	width: auto;
+	text-align: center;
+	display: inline;
 }
