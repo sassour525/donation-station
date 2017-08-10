@@ -3,6 +3,7 @@ var bodyParser = require("body-parser"); //include body-parser
 var path = require("path"); //include path
 var htmlRoutes = require("./app/routing/htmlRoutes.js"); //include routes from htmlRoutes file
 var apiRoutes = require("./app/routing/apiRoutes.js"); //include routes from apiRoutes file
+var methodOverride = require('method-override');
 
 var app = express(); //create express app
 var PORT = process.env.PORT || 3000; //set port makes it useable for heroku
@@ -16,13 +17,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
 app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 
+var db = require('./models');
+
+app.use(methodOverride("_method"));
+
+
+
 //get HTML routes
 htmlRoutes(app);
 //get API routes
-apiRoutes(app);
+// apiRoutes(app);
 
 //intantiate app to listen on port
-app.listen(PORT, function() {
-    console.log("App listening on PORT " + PORT);
+db.sequelize.sync({ force: true }).then(function() {
+    app.listen(PORT, function() {
+        console.log("App listening on PORT " + PORT);
+    });
 });
 
