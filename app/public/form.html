@@ -16,41 +16,21 @@
 
 			<h3><strong>Item List</strong></h3>
 
-			<div class="list-items" id="list-item-one">
-				<div class="dropdown">
-						<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-						Item
-						<span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-						<li><a href="#">Item 1</a></li>
-						<li><a href="#">Item 2</a></li>
-						<li><a href="#">Item 3</a></li>
-					</ul>
+			<div class="list-wrapper">
+				<div class="list-item" id="list-item-one">
+					<div class="dropdown">
+							<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+							Item
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenu1"></ul>
+					</div>
+					<input type="text" name="" id="quantity-input" placeholder="Quantity" class="form-control" required >
+					<input type="text" name="" id="price-per-textbox" placeholder="Price Per Item" class="form-control" disabled >
+					<input type="text" name="" id="total-per-textbox" placeholder="Total" class="form-control" disabled >
+					<button type="submit" class="btn btn-primary" id="add-item-btn">+</button>
 				</div>
-				<input type="text" name="" id="quantity-input" placeholder="Quantity" class="form-control" required >
-				<input type="text" name="" id="price-per-textbox" placeholder="Price Per Item" class="form-control" disabled >
-				<input type="text" name="" id="total-per-textbox" placeholder="Total" class="form-control" disabled >
 			</div>
-
-			<div class="list-items" id="list-item-two">
-				<div class="dropdown">
-						<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-						Item
-						<span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-						<li><a href="#">Item 1</a></li>
-						<li><a href="#">Item 2</a></li>
-						<li><a href="#">Item 3</a></li>
-					</ul>
-				</div>
-				<input type="text" name="" id="quantity-input" placeholder="Quantity" class="form-control" required >
-				<input type="text" name="" id="price-per-textbox" placeholder="Price Per Item" class="form-control" disabled >
-				<input type="text" name="" id="total-per-textbox" placeholder="Total" class="form-control" disabled >
-				<button type="submit" class="btn btn-primary btn-md btn-block" id="add-item-btn"><i class="fa fa-check-circle" aria-hidden="true"></i>+</button>
-			</div>
-
 
 			<br>
 			<br>
@@ -91,46 +71,47 @@
 </html>
 
 <script type="text/javascript">
-	//Grab user input
-	$("#submit").on("click", function() {
-		//Validate Form
-		function validateForm() {
-			var isValid = true;
-			$(".form-control").each(function() {
-				if ($(this).val() == '') {
-					isValid = false;
-				}
-			});
 
-			$(".chosen-select").each(function() {
-				if ($(this).val() == '') {
-					isValid = false;
-				}
-			});
-			return isValid;
-		};
+	$(document).ready(function() {
 
-		if (validateForm() == true) {
-			//Create Obj to post
-			var userData = {
-				name: $("#name").val().trim(),
-				photo: $("#photo").val().trim(),
-				scores: [$("#q1").val(), $("#q2").val(), $("#q3").val(), $("#q4").val(), $("#q5").val(), $("#q6").val(), $("#q7").val(), $("#q8").val(), $("#q9").val(), $("#q10").val()]
+		//hold itemNames for dropdown use
+		var itemNames = [];;
+
+		//query DB to get all of the item names back
+		$.get('/api/items', function(data) {
+			itemNames = data;
+			console.log(itemNames);
+		});
+
+		//when dropdown is clicked render the item names from the DB
+		$('.list-wrapper').on('show.bs.dropdown', '.dropdown',function () {
+			for (var i = 0; i < itemNames.length; i++) {
+				var item = $('<li>');
+				item.append('<a href="#">' + itemNames[i].item_name + '</a>');
+				console.log(item);
+				$('.dropdown-menu').append(item);
 			}
+		});
 
-			//Grab site URL
-			var currentURL = window.location.origin;
+		//remove content from dropdown to keep from duplicates being shown
+		$('.list-wrapper').on('hide.bs.dropdown', '.dropdown', function () {
+			$('.dropdown-menu').empty();
+		});
 
-			$.post(currentURL + '/api/friends', userData, function(data) {
-				$("#matchName").text(data.name);
-				$("#matchImg").attr("src", data.photo);
-				$("#resultsModal").modal("toggle");
-			});
-		} else {
-			alert("Please fill out all fields on the form before submitting.");
-		}
-
-		return false;
+		$('.list-wrapper').on('click', '#add-item-btn', function() {
+			var newListItem = $('<div>');
+			newListItem.addClass('list-item');
+			var newDropDown = $('<div>');
+			newDropDown.addClass('dropdown');
+			newDropDown.append('<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Item <span class="caret"></span></button>');
+			newDropDown.append('<ul class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenu1"></ul>');
+			newListItem.append(newDropDown);
+			newListItem.append('<input type="text" name="" id="quantity-input" placeholder="Quantity" class="form-control" required >');
+			newListItem.append('<input type="text" name="" id="price-per-textbox" placeholder="Price Per Item" class="form-control" disabled >');
+			newListItem.append('<input type="text" name="" id="total-per-textbox" placeholder="Total" class="form-control" disabled >');
+			newListItem.append('<button type="submit" class="btn btn-primary" id="add-item-btn">+</button>');
+			$('.list-wrapper').append(newListItem);
+		});
 
 	});
 </script>

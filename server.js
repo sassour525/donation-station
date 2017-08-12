@@ -26,10 +26,10 @@ app.use(methodOverride("_method"));
 //get HTML routes
 htmlRoutes(app);
 //get API routes
-// apiRoutes(app);
+apiRoutes(app);
 
 //intantiate app to listen on port
-db.sequelize.sync({ force: true }).then(function() {
+db.sequelize.sync({ force: false }).then(function() {
     app.listen(PORT, function() {
         console.log("App listening on PORT " + PORT);
     });
