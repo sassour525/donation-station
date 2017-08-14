@@ -21,8 +21,6 @@ var db = require('./models');
 
 app.use(methodOverride("_method"));
 
-
-
 //get HTML routes
 htmlRoutes(app);
 //get API routes
